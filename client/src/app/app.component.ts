@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { AccountService } from './_services/account.service';
 import { User } from './_models/user';
 import { HomeComponent } from './home/home.component';
+import { ToastrModule } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
