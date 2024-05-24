@@ -14,6 +14,7 @@ import { AccountService } from './_services/account.service';
 import { User } from './_models/user';
 import { HomeComponent } from './home/home.component';
 import { ToastrModule } from 'ngx-toastr';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ import { ToastrModule } from 'ngx-toastr';
     NavComponent,
     HomeComponent,
     FormsModule,
+    NgxSpinnerModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
