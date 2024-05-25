@@ -1,4 +1,5 @@
 ﻿using API.Data;
+using API.Helpers;
 using API.Interfaces;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,17 @@ public static class ApplicationServiceExtensions
         });
         services.AddCors();
 
+        //in essence; AddScoped makes sure the service is created once per request.
         //Provide ITokenService interface. using AddScoped() makes sure itll be garbageCollected whenever its controller is disposed of at the end of an http request.
         services.AddScoped<ITokenService, TokenService>();
 
         services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+
+        services.AddScoped<IPhotoService, PhotoService>();
 
         return services;
     }

@@ -10,6 +10,7 @@ import { GalleryModule } from 'ng-gallery';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { PhotoEditorComponent } from '../photo-editor/photo-editor.component';
 
 @Component({
   selector: 'app-member-edit',
@@ -20,6 +21,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     GalleryModule,
     FormsModule,
     NgxSpinnerModule,
+    PhotoEditorComponent,
   ],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.scss',

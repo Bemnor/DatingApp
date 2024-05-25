@@ -44,7 +44,7 @@ public class AccountController : BaseApiController
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return new UserDto { Username = user.UserName, Token = _tokenService.CreateToken(user) };
+        return new UserDto { Username = user.UserName, Token = _tokenService.CreateToken(user), };
     }
 
     [HttpPost("login")]
@@ -52,9 +52,9 @@ public class AccountController : BaseApiController
     {
         //Find User using loginDto
         //SingleOrDefaultAsync() finds the first unique item that matches its query, if 2 or more items match; throws exception.
-        var user = await _context.Users.SingleOrDefaultAsync(user =>
-            user.UserName == loginDto.Username
-        );
+        var user = await _context
+            .Users.Include(p => p.Photos)
+            .SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
 
         if (user == null)
             return Unauthorized("invalid username");
@@ -69,7 +69,12 @@ public class AccountController : BaseApiController
             if (computedHash[i] != user.PasswordHash[i])
                 return Unauthorized("invalid password");
         }
-        return new UserDto { Username = user.UserName, Token = _tokenService.CreateToken(user) };
+        return new UserDto
+        {
+            Username = user.UserName,
+            Token = _tokenService.CreateToken(user),
+            PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain).Url
+        };
     }
 
     private async Task<bool> UserExists(string username)
