@@ -3,6 +3,7 @@ using System.Text;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,11 +15,13 @@ public class AccountController : BaseApiController
     private readonly DataContext _context;
 
     private readonly ITokenService _tokenService;
+    private readonly IMapper _mapper;
 
     //constructor
-    public AccountController(DataContext context, ITokenService tokenService)
+    public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
     {
         _tokenService = tokenService;
+        _mapper = mapper;
         _context = context;
     }
 
@@ -30,21 +33,29 @@ public class AccountController : BaseApiController
         if (await UserExists(registerDto.Username))
             return BadRequest("Username is taken");
 
+        var user = _mapper.Map<AppUser>(registerDto);
+
         //hmac is an encryption class
         //placing the 'using' tag there makes sure the "HMACSHA512" Obj we created will be Garbage-Collected.
         using var hmac = new HMACSHA512();
 
-        var user = new AppUser
-        {
-            UserName = registerDto.Username.ToLower(),
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password.ToLower())), //transforming password to bytes then encrypting the bytes
-            PasswordSalt = hmac.Key //adding salt(shuffling encrypted string)
-        };
+        user.UserName = registerDto.Username.ToLower();
+
+        //transforming password to bytes then encrypting the bytes
+        user.PasswordHash = hmac.ComputeHash(
+            Encoding.UTF8.GetBytes(registerDto.Password.ToLower())
+        );
+        user.PasswordSalt = hmac.Key; //adding salt(shuffling encrypted string)
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return new UserDto { Username = user.UserName, Token = _tokenService.CreateToken(user), };
+        return new UserDto
+        {
+            Username = user.UserName,
+            Token = _tokenService.CreateToken(user),
+            KnownAs = user.KnownAs
+        };
     }
 
     [HttpPost("login")]
@@ -73,7 +84,8 @@ public class AccountController : BaseApiController
         {
             Username = user.UserName,
             Token = _tokenService.CreateToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain).Url
+            PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain).Url,
+            KnownAs = user.KnownAs
         };
     }
 
