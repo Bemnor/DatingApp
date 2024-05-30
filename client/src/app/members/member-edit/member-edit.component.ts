@@ -11,6 +11,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { PhotoEditorComponent } from '../photo-editor/photo-editor.component';
+import { TimePastPipe } from 'ng-time-past-pipe';
 
 @Component({
   selector: 'app-member-edit',
@@ -22,6 +23,7 @@ import { PhotoEditorComponent } from '../photo-editor/photo-editor.component';
     FormsModule,
     NgxSpinnerModule,
     PhotoEditorComponent,
+    TimePastPipe,
   ],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.scss',

@@ -5,11 +5,19 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
+import { TimeagoModule } from 'ngx-timeago';
+import { TimePastPipe } from 'ng-time-past-pipe';
 
 @Component({
   selector: 'app-member-detail',
   standalone: true,
-  imports: [CommonModule, TabsModule, GalleryModule],
+  imports: [
+    CommonModule,
+    TabsModule,
+    GalleryModule,
+    TimeagoModule,
+    TimePastPipe,
+  ],
   templateUrl: './member-detail.component.html',
   styleUrl: './member-detail.component.scss',
 })
